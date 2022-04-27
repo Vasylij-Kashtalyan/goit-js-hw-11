@@ -29,6 +29,7 @@
     "axios": "^0.26.1",
     "handlebars": "^4.7.7",
     "index.js": "0.0.3",
+    "simple-lightbox": "^2.1.0",
     "simplelightbox": "^2.10.3",
     "src": "^1.1.2"
   }

@@ -10,42 +10,55 @@ const API_KEY = '26619525-aa9606919adbfa9adcea81a99'
 
 const formEll = document.querySelector('.search-form');
 const container = document.querySelector('.gallery');
+const inputEll = document.querySelector('input')
+
 formEll.addEventListener('submit', onSearchForm);
-container.addEventListener('click', onClickCard);
+container.addEventListener('click', onClickGallaryCard);
+inputEll.addEventListener('input', onInputCard)
 
 
-function getImgView(searchQuery) {
-  return fetch(`${BASE_URL}?key=${API_KEY}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(response.status);
-      }
-      return response.json()
-    })
+async function getImgView(nameSearch) {
+  const response = await fetch(`${BASE_URL}?key=${API_KEY}&q=${nameSearch}&image_type=photo&orientation=horizontal&safesearch=true`);
+  if (!response.ok) {
+    throw new Error(response.status);
+  }
+  return await response.json();
 }
+
+function onInputCard(evt){
+  const searchInput = evt.currentTarget.value
+}
+function onClickGallaryCard(evt) {
+  evt.preventDefault()
   
-function onClickCard(evt) {
-    lightbox.open(evt);
+  if (!evt.currentTarget.classList.contains('card')) {
+    return;
+  }
+
+  lightbox.open();
 }
 
-// function onFetchError(error) {
-//   alert('Упс, что-то пошло не так и мы не нашли вашего покемона!');
-// }
+
 
 function onSearchForm(evt) {
   evt.preventDefault();
-  evt.currentTarget.reset()
   const form = evt.target;
-  const name = form.elements.query.value;
+  const name = form.elements.query.value.trim()
   
+  getImgView(name)
+    .then(data => {
+      
 
-  getImgView(name).then(data => {
-    container.innerHTML = creatCardGallery(data)
-    
-  })
+      container.innerHTML = creatCardGallery(data)
+      lightbox.refresh()
+    })
+    .catch(onFetchError)
+  
+  evt.currentTarget.reset()
 }
 
 function creatCardGallery(data) {
+  
   return data.hits.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads, }) => {
     return `
         <div class="photo-card">
@@ -67,6 +80,8 @@ function creatCardGallery(data) {
               </p>
           </div>
         </div>`;
-    }).join('')
+  }).join('');
 }
-
+function onFetchError(error) {
+  alert('Упс, что-то пошло не так и мы не нашли вашего покемона!');
+}
