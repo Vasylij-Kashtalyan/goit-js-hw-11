@@ -5,55 +5,89 @@ h3,
 h4,
 h5,
 h6 {
-    margin: 0;
+  margin: 0;
 }
 
 ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 img {
-    display: block;
-    width: 100%;
-    height: auto;
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
+}
+
+body {
+  background-image: url('../images/demo.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .gallery {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-right: -20px;
-    margin-bottom: -20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-right: -20px;
+  margin-bottom: -20px;
 }
 .photo-card {
-    flex-basis: calc(25% - 20px);
-    margin-right: 20px;
-    margin-bottom: 20px;
-    
-    overflow: hidden;
-    cursor: pointer;
-    border-radius: 4px 4px 4px 4px;
-    box-shadow: 0px 1px 3px rgb(0 0 0 / 12%),
-    0px 1px 1px rgb(0 0 0 / 14%),
+  flex-basis: calc(25% - 20px);
+  margin-right: 20px;
+  margin-bottom: 20px;
+
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 4px 4px 4px 4px;
+  box-shadow: 0px 1px 3px rgb(0 0 0 / 12%), 0px 1px 1px rgb(0 0 0 / 14%),
     0px 2px 1px rgb(0 0 0 / 20%);
 }
 .info {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
-.container{
-    margin: 0 auto;
-    width: 1600px;
+.container {
+  margin: 0 auto;
+  width: 1600px;
 }
-.search-form{
-    display: flex;
-    justify-content: center;
-    
-    height: 30px;
-    margin-right: 10px;
+.search-form {
+  display: flex;
+  justify-content: center;
+
+  height: 30px;
+  margin-right: 10px;
+}
+.input {
+  width: 100%;
+  max-width: 450px;
+  height: 50px;
+  padding: 15px 16px;
+  color: rgba(65, 20, 224, 0);
+  color: black;
+  border: none;
+  box-sizing: border-box;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.15));
+  border-radius: 4px;
+  outline: none;
+}
+.btn {
+  width: 100px;
+  height: 50px;
+  border-radius: 4px;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.15));
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.88;
+  letter-spacing: 0.06em;
+}
+.load-more {
+  display: none;
+  margin: auto;
 }

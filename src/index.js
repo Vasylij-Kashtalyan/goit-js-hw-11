@@ -1,87 +1,88 @@
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-import { lightbox } from './openLightbox';
 import './css/styles.css';
-import './sass/main.scss'
+import './sass/main.scss';
+import { cleanRender } from './partials/js/cleanRender';
+import { refs } from './partials/js/refs';
+import { smoothScroll } from './partials/js/smoothScroll';
+import { creatCardGallery } from './partials/js/creatCardGallery';
+import { Notify } from 'notiflix';
+import NewPixabayAPI from './partials/js/api/apiServise';
 
+const pixabayAPI = new NewPixabayAPI();
 
-const BASE_URL = 'https://pixabay.com/api/';
-const API_KEY = '26619525-aa9606919adbfa9adcea81a99'
+refs.formRef.addEventListener('submit', onInputSearch);
+refs.btnLoadMore.addEventListener('click', onLoadMore);
 
-const formEll = document.querySelector('.search-form');
-const container = document.querySelector('.gallery');
-const inputEll = document.querySelector('input')
-
-formEll.addEventListener('submit', onSearchForm);
-container.addEventListener('click', onClickGallaryCard);
-inputEll.addEventListener('input', onInputCard)
-
-
-async function getImgView(nameSearch) {
-  const response = await fetch(`${BASE_URL}?key=${API_KEY}&q=${nameSearch}&image_type=photo&orientation=horizontal&safesearch=true`);
-  if (!response.ok) {
-    throw new Error(response.status);
-  }
-  return await response.json();
-}
-
-function onInputCard(evt){
-  const searchInput = evt.currentTarget.value
-}
-function onClickGallaryCard(evt) {
-  evt.preventDefault()
-  
-  if (!evt.currentTarget.classList.contains('card')) {
-    return;
-  }
-
-  lightbox.open();
-}
-
-
-
-function onSearchForm(evt) {
+function onInputSearch(evt) {
   evt.preventDefault();
-  const form = evt.target;
-  const name = form.elements.query.value.trim()
-  
-  getImgView(name)
-    .then(data => {
-      
+  pixabayAPI.query = evt.currentTarget.elements.searchQuery.value.trim();
+  pixabayAPI.resetPage();
 
-      container.innerHTML = creatCardGallery(data)
-      lightbox.refresh()
-    })
-    .catch(onFetchError)
-  
-  evt.currentTarget.reset()
+  if (pixabayAPI.query === '') return;
+
+  cleanRender();
+  if (cleanRender) refs.btnLoadMore.style.display = 'none';
+
+  pixabayAPI.getImgView(pixabayAPI.query).then(pictures => {
+    if (pictures.hits.length < 1) {
+      Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+    } else if (pictures.hits.length >= 1) {
+      Notify.success(`Hooray! We found ${pictures.totalHits} images.`);
+      refs.btnLoadMore.style.display = 'block';
+    }
+
+    if (pictures.hits.lenght < 40) refs.btnLoadMore.style.display = 'none';
+
+    creatCardGallery(pictures);
+  });
 }
 
-function creatCardGallery(data) {
-  
-  return data.hits.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads, }) => {
-    return `
-        <div class="photo-card">
-          <a href="${largeImageURL}">
-              <img class='card' src="${webformatURL}" alt="${tags}" loading="lazy" />
-          </a>
-          <div class="info">
-              <p class="info-item">
-                <b>Likes:</b> ${likes}
-              </p>
-              <p class="info-item">
-                <b>Views:</b> ${views}
-              </p>
-              <p class="info-item">
-                <b>Comments:</b> ${comments}
-              </p>
-              <p class="info-item">
-                <b>Downloads:</b> ${downloads}
-              </p>
-          </div>
-        </div>`;
-  }).join('');
+async function onLoadMore() {
+  try {
+    await pixabayAPI.getImgView(pixabayAPI.query).then(pictures => {
+      creatCardGallery(pictures);
+      if (pictures.hits.lenght < 40) {
+        setTimeout(() => {
+          Notify.info("We're sorry, but you've reached the end of search results");
+        }, 1000);
+        refs.btnLoadMore.style.display = 'none';
+      }
+      smoothScroll();
+    });
+  } catch (error) {}
 }
-function onFetchError(error) {
-  alert('Упс, что-то пошло не так и мы не нашли вашего покемона!');
-}
+
+// function onInputCard(evt) {
+//   const searchInput = evt.currentTarget.value;
+// }
+// function onClickGallaryCard(evt) {
+//   evt.preventDefault();
+
+//   if (!evt.currentTarget.classList.contains('card')) {
+//     return;
+//   }
+
+//   lightbox.open();
+// }
+
+// function onSearchForm(evt) {
+//   evt.preventDefault();
+//   const form = evt.target;
+
+//   pixabayAPI.query = form.elements.searchQuery.value.trim();
+
+//   if (!pixabayAPI.query) return;
+
+//   pixabayAPI
+//     .getImgView(pixabayAPI.query)
+//     .then(data => {
+//       container.innerHTML = creatCardGallery(data);
+//       lightbox.refresh();
+//     })
+//     .catch(onFetchError);
+
+//   evt.currentTarget.reset();
+// }
+
+// function onFetchError(error) {
+//   alert('Упс, что-то пошло не так и мы не нашли вашего покемона!');
+// }
