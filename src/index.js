@@ -27,6 +27,8 @@ function onInputSearch(evt) {
       Notify.failure('Sorry, there are no images matching your search query. Please try again.');
     } else if (pictures.hits.length >= 1) {
       Notify.success(`Hooray! We found ${pictures.totalHits} images.`);
+
+      refs.containerEll.classList.remove('container__imgbackground');
       refs.btnLoadMore.style.display = 'block';
     }
 
