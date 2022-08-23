@@ -28,10 +28,8 @@ function onInputSearch(evt) {
     } else if (pictures.hits.length >= 1) {
       Notify.success(`Hooray! We found ${pictures.totalHits} images.`);
 
-      refs.containerEll.classList.remove('container__imgbackground');
       refs.btnLoadMore.style.display = 'block';
     }
-
     if (pictures.hits.lenght < 40) refs.btnLoadMore.style.display = 'none';
 
     creatCardGallery(pictures);

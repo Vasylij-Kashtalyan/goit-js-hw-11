@@ -28,6 +28,8 @@ export function creatCardGallery(pictures) {
     })
     .join('');
   refs.gallery.insertAdjacentHTML('beforeend', markUp);
+  refs.containerEll.classList.remove('container__imgbackground');
+
   let gallery = new SimpleLightbox('.gallery a');
   gallery.refresh();
 }
